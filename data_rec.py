@@ -38,7 +38,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 print("Training...")
 # Train a Random Forest Classifier
-model = RandomForestClassifier(n_estimators=10, max_depth= 5, random_state=42, max_leaf_nodes=20, warm_start=True)
+model = RandomForestClassifier(n_estimators=10, max_depth= 5, random_state=42, max_leaf_nodes=20, n_jobs=5, warm_start=True)
 print("Model Fit...")
 model.fit(X_train, y_train)
 
@@ -47,8 +47,9 @@ print("Evaluating...")
 accuracy = model.score(X_test, y_test)
 print(f'Accuracy: {accuracy * 100:.2f}%')
 
+print("Exporting...")
 # Export the trained model
-joblib.dump(model, 'data_recognizer.pkl')
+joblib.dump(model, 'data_recognizer.exe')
 
 # Define the directory containing the input files
 input_dir = 'C:/Users/guilh/Documents/Guilherme/Hackaton/NASASpaceApps2024/NASASpaceApps2024/input'
