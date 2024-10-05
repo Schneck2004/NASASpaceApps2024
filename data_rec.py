@@ -49,7 +49,7 @@ print(f'Accuracy: {accuracy * 100:.2f}%')
 
 print("Exporting...")
 # Export the trained model
-joblib.dump(model, 'data_recognizer.exe')
+joblib.dump(model, 'data_recognizer.z', compress=5)
 
 # Define the directory containing the input files
 input_dir = 'C:/Users/guilh/Documents/Guilherme/Hackaton/NASASpaceApps2024/NASASpaceApps2024/input'
