@@ -38,7 +38,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 print("Training...")
 # Train a Random Forest Classifier
-model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=20, min_samples_split=10000, min_samples_leaf=7500, n_jobs=6, warm_start=True, max_samples=20)
+model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=18, min_samples_split=20000, min_samples_leaf=15000, n_jobs=6, warm_start=True)
 print("Model Fitting...")
 model.fit(X_train, y_train)
 
