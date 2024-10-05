@@ -5,3 +5,4 @@ Project made by Guilherme Schenck, Caio Emanuel, and João Nascimento for the NA
 
 from scipy.io import wavfile
 import noisereduce as nr
+import numpy as np
