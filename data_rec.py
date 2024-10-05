@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 # Define the directory containing the CSV files
-data_dir = 'C:/Users/guilh/Downloads/space_apps_2024_seismic_detection/space_apps_2024_seismic_detection/data/lunar/training/data/S12_GradeA'
+data_dir = 'C:/Users/guilh/Downloads/space_apps_2024_seismic_detection/space_apps_2024_seismic_detection/data/lunar/training/data/training'
 
 # Define the list of file extensions to consider
 file_extensions = ['csv']
@@ -38,8 +38,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 print("Training...")
 # Train a Random Forest Classifier
-model = RandomForestClassifier(n_estimators=10, max_depth= 5, random_state=42, max_leaf_nodes=20, n_jobs=5, warm_start=True)
-print("Model Fit...")
+model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=20, min_samples_split=10000, min_samples_leaf=7500, n_jobs=6, warm_start=True, max_samples=20)
+print("Model Fitting...")
 model.fit(X_train, y_train)
 
 print("Evaluating...")
@@ -52,7 +52,7 @@ print("Exporting...")
 joblib.dump(model, 'data_recognizer.z', compress=5)
 
 # Define the directory containing the input files
-input_dir = 'C:/Users/guilh/Documents/Guilherme/Hackaton/NASASpaceApps2024/NASASpaceApps2024/input'
+input_dir = "C:/Users/guilh/Downloads/space_apps_2024_seismic_detection/space_apps_2024_seismic_detection/data/lunar/test/data/tests"
 
 # Iterate over all the files in the input directory
 for filename in os.listdir(input_dir):
