@@ -34,11 +34,11 @@ X = data.iloc[:, feature_columns]
 y = data.iloc[:, 0]
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5)
 
 print("Training...")
 # Train a Random Forest Classifier
-model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=18, min_samples_split=20000, min_samples_leaf=15000, n_jobs=6, warm_start=True)
+model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=18, min_samples_split=20000, min_samples_leaf=15000, n_jobs=6)
 print("Model Fitting...")
 model.fit(X_train, y_train)
 
