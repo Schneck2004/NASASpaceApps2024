@@ -28,4 +28,4 @@ enc = OrdinalEncoder()
 
 enc.fit(x)
 
-print(enc.categories_[1])
+print(enc.categories_[0])
