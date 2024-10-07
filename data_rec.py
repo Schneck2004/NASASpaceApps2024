@@ -1,72 +1,49 @@
-import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+import csv
 import joblib
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from tkinter import filedialog as fd
 
-# Define the directory containing the CSV files
-data_dir = 'C:/Users/guilh/Downloads/space_apps_2024_seismic_detection/space_apps_2024_seismic_detection/data/lunar/training/data/training'
+# Read the CSV file
+filename = fd.askopenfilename(title='Select a csv file', initialdir='C:/Users/guilh/Downloads/')
+filename.replace("", '')
+print(filename)
 
-# Define the list of file extensions to consider
-file_extensions = ['csv']
+filepath = fd.askdirectory(title='Select the output folder', initialdir='C:/Users/guilh/Downloads/')
+filepath.replace("", '')
 
-# Initialize an empty DataFrame to store the data from all the files
-data = pd.DataFrame()
+# Read the CSV data into a DataFrame
+df = pd.read_csv(filename)
 
-print("Merging training data...")
-# Iterate over all the files in the directory
-for filename in os.listdir(data_dir):
-    if any(filename.endswith(ext) for ext in file_extensions):
-        print(f"Joining {filename}")
-        # Read the data from the file
-        file_data = pd.read_csv(os.path.join(data_dir, filename))
+# Split the dataset into training and testing sets
+X_test = df.drop(['time_abs(%Y-%m-%dT%H:%M:%S.%f)', 'time_rel(sec)'], axis=1)
 
-        # Append the data to the main DataFrame
-        data = pd.concat([data, file_data])
+svm_model: SVC = joblib.load('trained.z')
 
-# Assuming the first column is the label (0 for noise, 1 for seismic activity)
-# and the rest of the columns are the features
+# Predict the class for the testing set
+y_pred = svm_model.predict(X_test)
 
-# Define the list of columns to use as features
-feature_columns = list(range(1, data.shape[1]))  # Assuming the first column is the label
+# Export data to a new file
+new_file = f'{filepath}/{(filename.split("/")[len(filename.split("/"))-1]).replace(".csv", "")}_quake_data.csv'
 
-X = data.iloc[:, feature_columns]
-y = data.iloc[:, 0]
+df.to_csv(new_file, index=False)
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5)
+quake_data = pd.read_csv(new_file)
 
-print("Training...")
-# Train a Random Forest Classifier
-model = RandomForestClassifier(n_estimators=4, max_depth=3, max_leaf_nodes=18, min_samples_split=20000, min_samples_leaf=15000, n_jobs=6)
-print("Model Fitting...")
-model.fit(X_train, y_train)
+quake_data.to_csv(new_file, index=False)
 
-print("Evaluating...")
-# Evaluate the model on the test set
-accuracy = model.score(X_test, y_test)
-print(f'Accuracy: {accuracy * 100:.2f}%')
+with open(new_file, 'w+') as f:
+    my_data = csv.reader(f)
+    writer = csv.writer(f, delimiter='\n')
+        
+    for row in my_data:
+        if row[1] != 'time_rel(sec)':
+            line = my_data.line_num
+            if y_pred[line-1] == 0:
+                writer.writerow(row)
+        else:
+            writer.writerow(row)
 
-print("Exporting...")
-# Export the trained model
-joblib.dump(model, 'data_recognizer.z', compress=5)
-
-# Define the directory containing the input files
-input_dir = "C:/Users/guilh/Downloads/space_apps_2024_seismic_detection/space_apps_2024_seismic_detection/data/lunar/test/data/tests"
-
-# Iterate over all the files in the input directory
-for filename in os.listdir(input_dir):
-    if filename.endswith('.csv'):
-        # Read the input file
-        input_data = pd.read_csv(os.path.join(input_dir, filename), sep='\t')
-
-        # Extract the start times of the quakes
-        start_times = input_data['Start Time']
-
-        # Process the start times (e.g., convert to seconds, remove outliers)
-        # For example, let's assume we want to remove any start times that are more than 10 seconds apart
-        start_times = start_times[(start_times.diff() < 10).cumsum()]
-
-        # Print the start times of the quakes
-        print("Start times of the quakes:")
-        print(start_times)
+quake_data.to_csv(new_file, index=False)
